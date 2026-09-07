@@ -50,14 +50,13 @@ def main():
 
     file_contents = str()
 
-    print(chat)
-
     if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
         arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
         with open(arguments["file_path"], "r") as f:
             file_contents = f.read()
-
-    print(file_contents)
+            print(file_contents)
+    else:
+        print(chat)
 
 
 if __name__ == "__main__":
