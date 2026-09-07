@@ -88,7 +88,6 @@ def main():
             return
 
         for tool_call in response.choices[0].message.tool_calls:
-            print(tool_call)
             result = execute_tool(tool_call)
             messages.append({
                 "role": "tool",
