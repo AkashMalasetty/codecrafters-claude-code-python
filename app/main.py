@@ -50,6 +50,8 @@ def main():
 
     file_contents = str()
 
+    print(chat)
+
     if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
         arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
         with open(arguments["file_path"], "r") as f:
