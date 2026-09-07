@@ -43,6 +43,9 @@ def main():
         ]
     )
 
+    # TODO: Uncomment the following line to pass the first stage
+    print("Akash",chat.choices[0].message.content)
+
     file_contents = str()
 
     if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
@@ -57,9 +60,6 @@ def main():
 
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
-
-    # TODO: Uncomment the following line to pass the first stage
-    # print(chat.choices[0].message.content)
 
 
 if __name__ == "__main__":
