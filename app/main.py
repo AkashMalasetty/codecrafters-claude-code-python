@@ -43,7 +43,7 @@ def main():
     )
 
     print("Prompt:", args.p)
-    print("Response:", chat.choices)
+    print("Response:", chat)
 
 
     if not chat.choices or len(chat.choices) == 0:
