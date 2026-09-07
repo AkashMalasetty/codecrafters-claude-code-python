@@ -51,9 +51,9 @@ def main():
             file_contents = f.read()
 
     # TODO: Uncomment the following line to pass the first stage
-    print(chat.choices[0].message)
+    # print(chat.choices[0].message)
 
-    print(args.p)
+    # print(args.p)
 
     print(file_contents)
 
