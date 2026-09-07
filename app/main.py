@@ -42,21 +42,25 @@ def main():
         ]
     )
 
+    print("Prompt:", args.p)
+    print("Response:", chat.choices)
+
+
     if not chat.choices or len(chat.choices) == 0:
         raise RuntimeError("no choices in response")
 
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
 
-    file_contents = str()
+    # file_contents = str()
 
-    if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
-        arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
-        with open(arguments["file_path"], "r") as f:
-            file_contents = f.read()
-            print(file_contents)
-    else:
-        print(chat.choices[0].message.content)
+    # if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
+    #     arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
+    #     with open(arguments["file_path"], "r") as f:
+    #         file_contents = f.read()
+    #         print(file_contents)
+    # else:
+    #     print(chat.choices[0].message.content)
 
 
 if __name__ == "__main__":
