@@ -68,7 +68,7 @@ def execute_tool(tool_call):
 
     if tool_call.function.name == "Write":
             arguments = json.loads(tool_call.function.arguments)
-            with open("../"+arguments["file_path"], "r") as f:
+            with open(arguments["file_path"], "w") as f:
                 file_response = f.write(arguments["content"])
                 return file_response
 
