@@ -3,6 +3,7 @@ import os
 import sys
 import json
 from openai import OpenAI
+import subprocess
 
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 BASE_URL = os.getenv("OPENROUTER_BASE_URL", default="https://openrouter.ai/api/v1")
@@ -53,6 +54,23 @@ def call_api(messages):
                         }
                     }
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "Bash",
+                    "description": "Execute a shell command",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["command"],
+                        "properties": {
+                            "command": {
+                                "type": "string",
+                                "description": "The command to execute"
+                            }
+                        }
+                    }
+                }
             }
         ]
     )
@@ -67,10 +85,22 @@ def execute_tool(tool_call):
             return file_contents
 
     if tool_call.function.name == "Write":
-            arguments = json.loads(tool_call.function.arguments)
-            with open(arguments["file_path"], "w") as f:
-                f.write(arguments["content"])
-                return "File Written"
+        arguments = json.loads(tool_call.function.arguments)
+        with open(arguments["file_path"], "w") as f:
+            f.write(arguments["content"])
+            return "File Written"
+
+    if tool_call.function.name == "Bash":
+        arguments = json.loads(tool_call.function.arguments)
+        result = subprocess.run(
+            arguments["command"].split(),
+            capture_output=True, 
+            text=True
+        )
+        if result.stderr.strip() != "":
+            return result.stdout.strip() 
+        elif result.stdout.strip() != "":
+            return result.stdout.strip()
 
 def main():
     p = argparse.ArgumentParser()
