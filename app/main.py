@@ -53,6 +53,8 @@ def main():
     # TODO: Uncomment the following line to pass the first stage
     print(chat.choices[0].message)
 
+    print(args.p)
+
     print(file_contents)
 
     if not chat.choices or len(chat.choices) == 0:
