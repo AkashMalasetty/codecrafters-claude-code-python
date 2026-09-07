@@ -8,7 +8,7 @@ import subprocess
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 BASE_URL = os.getenv("OPENROUTER_BASE_URL", default="https://openrouter.ai/api/v1")
 
-def call_api(messages):
+def call_api(messages, tools):
     if not API_KEY:
             raise RuntimeError("OPENROUTER_API_KEY is not set")
     
@@ -16,63 +16,7 @@ def call_api(messages):
     chat = client.chat.completions.create(
         model="anthropic/claude-haiku-4.5",
         messages=messages,
-        tools=[
-            {
-                "type": "function",
-                "function": {
-                    "name": "Read",
-                    "description": "Read and return the contents of a file",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "file_path": {
-                                "type": "string",
-                                "description": "The path to the file to read"
-                            }
-                        },
-                        "required": ["file_path"]
-                    }   
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "Write",
-                    "description": "Write content to a file",
-                    "parameters": {
-                        "type": "object",
-                        "required": ["file_path", "content"],
-                        "properties": {
-                            "file_path": {
-                                "type": "string",
-                                "description": "The path of the file to write to"
-                            },
-                            "content": {
-                                "type": "string",
-                                "description": "The content to write to the file"
-                            }
-                        }
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "Bash",
-                    "description": "Execute a shell command",
-                    "parameters": {
-                        "type": "object",
-                        "required": ["command"],
-                        "properties": {
-                            "command": {
-                                "type": "string",
-                                "description": "The command to execute"
-                            }
-                        }
-                    }
-                }
-            }
-        ]
+        tools=tools
     )
 
     return chat
@@ -107,9 +51,66 @@ def main():
     args = p.parse_args()
 
     messages = [{"role": "user", "content": args.p}]
+    tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "Read",
+                "description": "Read and return the contents of a file",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "file_path": {
+                            "type": "string",
+                            "description": "The path to the file to read"
+                        }
+                    },
+                    "required": ["file_path"]
+                }   
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "Write",
+                "description": "Write content to a file",
+                "parameters": {
+                    "type": "object",
+                    "required": ["file_path", "content"],
+                    "properties": {
+                        "file_path": {
+                            "type": "string",
+                            "description": "The path of the file to write to"
+                        },
+                        "content": {
+                            "type": "string",
+                            "description": "The content to write to the file"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "Bash",
+                "description": "Execute a shell command",
+                "parameters": {
+                    "type": "object",
+                    "required": ["command"],
+                    "properties": {
+                        "command": {
+                            "type": "string",
+                            "description": "The command to execute"
+                        }
+                    }
+                }
+            }
+        }
+    ]
 
     while True:
-        response = call_api(messages)
+        response = call_api(messages, tools)
         messages.append(response.choices[0].message)
 
         if(response.choices[0].message.tool_calls is None or len(response.choices[0].message.tool_calls) == 0):
@@ -123,7 +124,6 @@ def main():
                 "tool_call_id": tool_call.id,
                 "content": result
             })
-
 
 if __name__ == "__main__":
     main()
