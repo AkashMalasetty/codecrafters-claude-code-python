@@ -32,6 +32,27 @@ def call_api(messages):
                         "required": ["file_path"]
                     }   
                 }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "Write",
+                    "description": "Write content to a file",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["file_path", "content"],
+                        "properties": {
+                            "file_path": {
+                                "type": "string",
+                                "description": "The path of the file to write to"
+                            },
+                            "content": {
+                                "type": "string",
+                                "description": "The content to write to the file"
+                            }
+                        }
+                    }
+                }
             }
         ]
     )
@@ -39,11 +60,17 @@ def call_api(messages):
     return chat
 
 def execute_tool(tool_call):
-     if tool_call.function.name == "Read":
+    if tool_call.function.name == "Read":
         arguments = json.loads(tool_call.function.arguments)
         with open(arguments["file_path"], "r") as f:
             file_contents = f.read()
             return file_contents
+
+    if tool_call.function.name == "Write":
+            arguments = json.loads(tool_call.function.arguments)
+            with open(arguments["file_path"], "r") as f:
+                file_response = f.write(arguments["content"])
+                return file_response
 
 def main():
     p = argparse.ArgumentParser()
