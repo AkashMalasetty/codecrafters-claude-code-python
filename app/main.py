@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import sys
 
@@ -42,7 +43,11 @@ def main():
         ]
     )
 
-    print(chat.choices[0].message.tool_calls)
+    if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
+        arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
+        with open(arguments["file_path"], "r") as f:
+            file_contents = f.read()
+            print(file_contents)
 
     if not chat.choices or len(chat.choices) == 0:
         raise RuntimeError("no choices in response")
