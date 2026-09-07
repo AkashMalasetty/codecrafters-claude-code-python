@@ -56,7 +56,7 @@ def main():
         response = call_api(messages)
         messages.append(response.choices[0].message)
 
-        if(len(response.choices[0].message.tool_calls) == 0):
+        if(response.choices[0].message.tool_calls is None or len(response.choices[0].message.tool_calls) == 0):
             print(response.choices[0].message.content)
             return
 
