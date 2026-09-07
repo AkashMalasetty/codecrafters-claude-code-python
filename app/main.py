@@ -43,15 +43,15 @@ def main():
         ]
     )
 
-    # TODO: Uncomment the following line to pass the first stage
-    print(chat.choices[0].message)
-
     file_contents = str()
 
     if chat.choices[0].message.tool_calls and chat.choices[0].message.tool_calls[0].function.name == "Read":
         arguments = json.loads(chat.choices[0].message.tool_calls[0].function.arguments)
         with open(arguments["file_path"], "r") as f:
             file_contents = f.read()
+
+    # TODO: Uncomment the following line to pass the first stage
+    print(chat.choices[0].message)
 
     print(file_contents)
 
