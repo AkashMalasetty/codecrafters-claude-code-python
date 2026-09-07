@@ -92,18 +92,17 @@ def execute_tool(tool_call):
 
     if tool_call.function.name == "Bash":
         arguments = json.loads(tool_call.function.arguments)
-        print("Arguments:",arguments["command"].split())
+        # print("Arguments:",arguments["command"].split())
         result = subprocess.run(
             arguments["command"].split(),
             capture_output=True, 
             text=True
         )
-        print("Stdout:", result.stdout)
-        print("Stderr:", result.stderr)
+        # print("Stdout:", result.stdout)
+        # print("Stderr:", result.stderr)
         if result.stderr.strip() != "":
             return result.stdout.strip() 
-        elif result.stdout.strip() != "":
-            return result.stdout.strip()
+        return result.stdout.strip()
 
 def main():
     p = argparse.ArgumentParser()
