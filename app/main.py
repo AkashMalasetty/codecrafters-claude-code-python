@@ -69,9 +69,8 @@ def execute_tool(tool_call):
     if tool_call.function.name == "Write":
             arguments = json.loads(tool_call.function.arguments)
             with open(arguments["file_path"], "w") as f:
-                file_response = f.write(arguments["content"])
-                print("File Response",file_response)
-                return file_response
+                f.write(arguments["content"])
+                return "File Written"
 
 def main():
     p = argparse.ArgumentParser()
